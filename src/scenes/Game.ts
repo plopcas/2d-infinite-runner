@@ -1,47 +1,46 @@
 import Phaser from "phaser";
+import TextureKeys from "../consts/TextureKeys";
+import SceneKeys from "../consts/SceneKeys";
+import AnimationKeys from "../consts/AnimationKeys";
 
 export default class Game extends Phaser.Scene {
+  private background!: Phaser.GameObjects.TileSprite;
+
   constructor() {
-    super("game");
-  }
-
-  preload() {
-    this.load.image("background", "assets/images/house/bg_repeat_340x640.png");
-
-    this.load.atlas(
-      "rocket-mouse",
-      "assets/images/characters/rocket-mouse.png",
-      "assets/images/characters/rocket-mouse.json"
-    );
+    super(SceneKeys.Game);
   }
 
   create() {
-    this.anims.create({
-      key: "rocket-mouse-run",
-      frames: this.anims.generateFrameNames("rocket-mouse", {
-        start: 1,
-        end: 4,
-        prefix: "rocketmouse_run",
-        zeroPad: 2,
-        suffix: ".png",
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
     // store the width and height of the game screen
     const width = this.scale.width;
     const height = this.scale.height;
 
-    this.add.tileSprite(0, 0, width, height, "background").setOrigin(0);
+    this.background = this.add
+      .tileSprite(0, 0, width, height, TextureKeys.Background)
+      .setOrigin(0, 0)
+      .setScrollFactor(0, 0);
 
-    this.add
+    const mouse = this.physics.add
       .sprite(
         width * 0.5, //middle of the screen
-        height * 0.5,
-        "rocket-mouse", //atlst key given in preload()
+        height - 30,
+        TextureKeys.RocketMouse, //key given in preload()
         "rocketmouse_fly01.png"
       )
-      .play("rocket-mouse-run");
+      .setOrigin(0.5, 1) // set origin to feet
+      .play(AnimationKeys.RocketMouseRun);
+
+    const body = mouse.body as Phaser.Physics.Arcade.Body;
+    body.setCollideWorldBounds(true);
+    body.setVelocityX(200);
+
+    this.physics.world.setBounds(0, 0, Number.MAX_SAFE_INTEGER, height - 30);
+
+    this.cameras.main.startFollow(mouse);
+    this.cameras.main.setBounds(0, 0, Number.MAX_SAFE_INTEGER, height);
+  }
+
+  update(time: number, delta: number): void {
+    this.background.setTilePosition(this.cameras.main.scrollX);
   }
 }
