@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import Phaser, { Animations } from "phaser";
 import TextureKeys from "../consts/TextureKeys";
 import SceneKeys from "../consts/SceneKeys";
 import AnimationKeys from "../consts/AnimationKeys";
@@ -35,6 +35,16 @@ export default class Preloader extends Phaser.Scene {
     this.load.image(
       TextureKeys.Bookcase2,
       "assets/images/house/object_bookcase2.png"
+    );
+
+    this.load.image(
+      TextureKeys.LaserEnd,
+      "assets/images/house/object_laser_end.png"
+    );
+
+    this.load.image(
+      TextureKeys.LaserMiddle,
+      "assets/images/house/object_laser.png"
     );
 
     this.load.atlas(
@@ -88,6 +98,18 @@ export default class Preloader extends Phaser.Scene {
       }),
       frameRate: 10,
       repeat: -1,
+    });
+
+    this.anims.create({
+      key: AnimationKeys.RocketMouseDead,
+      frames: this.anims.generateFrameNames(TextureKeys.RocketMouse, {
+        start: 1,
+        end: 2,
+        prefix: "rocketmouse_dead",
+        zeroPad: 2,
+        suffix: ".png",
+      }),
+      frameRate: 10,
     });
 
     this.scene.start(SceneKeys.Game);
