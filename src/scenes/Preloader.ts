@@ -52,6 +52,8 @@ export default class Preloader extends Phaser.Scene {
       "assets/images/characters/rocket-mouse.png",
       "assets/images/characters/rocket-mouse.json"
     );
+
+    this.load.image(TextureKeys.Coin, "assets/images/house//object_coin.png");
   }
 
   create() {
