@@ -75,21 +75,21 @@ export default class Game extends Phaser.Scene {
     this.coins = this.physics.add.staticGroup();
     this.spawnCoins();
 
-    const mouse = new RocketMouse(this, width * 0.5, height - 30);
-    this.add.existing(mouse);
+    this.mouse = new RocketMouse(this, width * 0.5, height - 30);
+    this.add.existing(this.mouse);
 
-    const body = mouse.body as Phaser.Physics.Arcade.Body;
+    const body = this.mouse.body as Phaser.Physics.Arcade.Body;
     body.setCollideWorldBounds(true);
     body.setVelocityX(200);
 
     this.physics.world.setBounds(0, 0, Number.MAX_SAFE_INTEGER, height - 55);
 
-    this.cameras.main.startFollow(mouse);
+    this.cameras.main.startFollow(this.mouse);
     this.cameras.main.setBounds(0, 0, Number.MAX_SAFE_INTEGER, height);
 
     this.physics.add.overlap(
       this.laserObstacle,
-      mouse,
+      this.mouse,
       this.handleOverlapLaser,
       undefined,
       this
@@ -97,7 +97,7 @@ export default class Game extends Phaser.Scene {
 
     this.physics.add.overlap(
       this.coins,
-      mouse,
+      this.mouse,
       this.handleCollectCoin,
       undefined,
       this
@@ -300,10 +300,12 @@ export default class Game extends Phaser.Scene {
 
       this.coins.children.each((child) => {
         const coin = child as Phaser.Physics.Arcade.Sprite;
-        if (!coin.active) return;
+        if (!coin.active) {
+          return;
+        }
         coin.x -= maxX;
-        const coinBody = coin.body as Phaser.Physics.Arcade.StaticBody;
-        coinBody.updateFromGameObject();
+        const body = coin.body as Phaser.Physics.Arcade.StaticBody;
+        body.updateFromGameObject();
       });
     }
   }
