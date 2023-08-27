@@ -194,6 +194,8 @@ export default class Game extends Phaser.Scene {
       });
 
       this.bookcase2.visible = !overlap;
+
+      this.spawnCoins();
     }
   }
 
@@ -249,6 +251,8 @@ export default class Game extends Phaser.Scene {
       const body = coin.body as Phaser.Physics.Arcade.StaticBody;
       body.setCircle(body.width * 0.5);
       body.enable = true;
+
+      body.updateFromGameObject();
 
       x += coin.width * 1.5;
     }
